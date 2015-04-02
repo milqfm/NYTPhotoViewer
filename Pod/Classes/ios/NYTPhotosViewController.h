@@ -98,6 +98,8 @@ extern NSString * const NYTPhotosViewControllerDidDismissNotification;
 
 - (void)setRightBarButtonItemImage:(UIImage *)image;
 
+- (void)setOverlayViewHidden:(BOOL)hidden animated:(BOOL)animated;
+
 @end
 
 /**
