@@ -151,7 +151,6 @@ static const UIEdgeInsets NYTPhotosViewControllerCloseButtinImageInsets = {3, 0,
         _overlayView = [[NYTPhotosOverlayView alloc] initWithFrame:CGRectMake(0, 0, NYTPhotoCaptionViewHorizontalMargin * 2.0, 0)];
         _overlayView.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"NYTPhotoViewerCloseButtonX"] landscapeImagePhone:[UIImage imageNamed:@"NYTPhotoViewerCloseButtonXLandscape"] style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonTapped:)];
         _overlayView.leftBarButtonItem.imageInsets = NYTPhotosViewControllerCloseButtinImageInsets;
-//        _overlayView.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButtonTapped:)];
 
         _notificationCenter = [[NSNotificationCenter alloc] init];
         
@@ -226,21 +225,8 @@ static const UIEdgeInsets NYTPhotosViewControllerCloseButtinImageInsets = {3, 0,
 }
 
 - (void)actionButtonTapped:(id)sender {
-    BOOL clientDidHandle = NO;
-    
     if ([self.delegate respondsToSelector:@selector(photosViewController:handleActionButtonTappedForPhoto:)]) {
-        clientDidHandle = [self.delegate photosViewController:self handleActionButtonTappedForPhoto:self.currentlyDisplayedPhoto];
-    }
-    
-    if (!clientDidHandle && self.currentlyDisplayedPhoto.image) {
-        UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[self.currentlyDisplayedPhoto.image] applicationActivities:nil];
-        activityViewController.completionHandler = ^(NSString *activityType, BOOL completed) {
-            if (completed && [self.delegate respondsToSelector:@selector(photosViewController:actionCompletedWithActivityType:)]) {
-                [self.delegate photosViewController:self actionCompletedWithActivityType:activityType];
-            }
-        };
-        
-        [self presentViewController:activityViewController animated:YES completion:nil];
+        [self.delegate photosViewController:self handleActionButtonTappedForPhoto:self.currentlyDisplayedPhoto];
     }
 }
 
@@ -256,8 +242,11 @@ static const UIEdgeInsets NYTPhotosViewControllerCloseButtinImageInsets = {3, 0,
     return self.overlayView.rightBarButtonItem;
 }
 
-- (void)setRightBarButtonItem:(UIBarButtonItem *)rightBarButtonItem {
-    self.overlayView.rightBarButtonItem = rightBarButtonItem;
+- (void)setRightBarButtonItemImage:(UIImage *)image {
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 35, 35)];
+    [button setImage:image forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(actionButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    self.overlayView.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
 }
 
 - (void)displayPhoto:(id <NYTPhoto>)photo animated:(BOOL)animated {
