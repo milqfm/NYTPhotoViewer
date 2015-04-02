@@ -94,11 +94,9 @@ extern NSString * const NYTPhotosViewControllerDidDismissNotification;
  */
 - (void)updateImageForPhoto:(id <NYTPhoto>)photo;
 
-- (void)dismissAnimated:(BOOL)animated;
+- (void)doneButtonTapped:(id)sender;
 
 - (void)setRightBarButtonItemImage:(UIImage *)image;
-
-- (void)setOverlayViewHidden:(BOOL)hidden animated:(BOOL)animated;
 
 @end
 
