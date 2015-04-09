@@ -78,7 +78,9 @@ NSString * const NYTPhotoViewControllerPhotoImageUpdatedNotification = @"NYTPhot
         _scalingImageView.delegate = self;
         
         if (!photo.image) {
-            [self setupLoadingView:loadingView];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self setupLoadingView:loadingView];
+            });
         }
         
         _notificationCenter = notificationCenter;
