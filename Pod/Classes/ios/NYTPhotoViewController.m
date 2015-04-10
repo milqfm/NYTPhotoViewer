@@ -66,6 +66,13 @@ NSString * const NYTPhotoViewControllerPhotoImageUpdatedNotification = @"NYTPhot
 
 #pragma mark - NYTPhotoViewController
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (!_photo.image) {
+        [self setupLoadingView:_loadingView];
+    }
+}
+
 - (instancetype)initWithPhoto:(id <NYTPhoto>)photo loadingView:(UIView *)loadingView notificationCenter:(NSNotificationCenter *)notificationCenter {
     self = [super initWithNibName:nil bundle:nil];
     
@@ -76,12 +83,8 @@ NSString * const NYTPhotoViewControllerPhotoImageUpdatedNotification = @"NYTPhot
         
         _scalingImageView = [[NYTScalingImageView alloc] initWithImage:photoImage frame:CGRectZero];
         _scalingImageView.delegate = self;
-        
-        if (!photo.image) {
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [self setupLoadingView:loadingView];
-            });
-        }
+
+        _loadingView = loadingView;
         
         _notificationCenter = notificationCenter;
         
@@ -92,7 +95,6 @@ NSString * const NYTPhotoViewControllerPhotoImageUpdatedNotification = @"NYTPhot
 }
 
 - (void)setupLoadingView:(UIView *)loadingView {
-    self.loadingView = loadingView;
     if (!loadingView) {
         UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         [activityIndicator startAnimating];
